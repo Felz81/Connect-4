@@ -54,16 +54,16 @@ namespace Connect_4
             }
             // On vérifie les diagonales gauche vers droite
             for (int i = 0; i < 4; i++)
-                    if (board[i] == board[i + 8] && board[i + 8] == board[i + 16] && board[i + 16] == board[i + 24])
-                    {
-                        return board[i];
-                    }
+                if (board[i] == board[i + 8] && board[i + 8] == board[i + 16] && board[i + 16] == board[i + 24])
+                {
+                    return board[i];
+                }
             // On vérifie les diagonales de droite vers gauche
-            for(int i = 7; i >= 0; i--)
-                   if (board[i] == board[i + 6] && board[i + 6] == board[i + 12] && board[i + 12] == board[i + 18])
-                    {
-                        return board[i];
-                    }
+            for (int i = 20; i >= 0; i--)
+                if (board[i] == board[i + 6] && board[i + 6] == board[i + 12] && board[i + 12] == board[i + 18])
+                {
+                    return board[i];
+                }
             // Aucun gagnant
             return null;
         }
@@ -84,14 +84,14 @@ namespace Connect_4
         // Envoie le jeton dans le bas de la colonne
         public void makeMove(int index, string symbol)
         {
-                if (board[index+ 35] != "X" && board[index + 35] != "O")
-                {
-                    index += 35;
-                }
-                else if (board[index + 28] != "X" && board[index + 28] != "O")
-                {
-                    index += 28;
-                }
+            if (board[index + 35] != "X" && board[index + 35] != "O")
+            {
+                index += 35;
+            }
+            else if (board[index + 28] != "X" && board[index + 28] != "O")
+            {
+                index += 28;
+            }
             else if (board[index + 21] != "X" && board[index + 21] != "O")
             {
                 index += 21;
@@ -104,6 +104,7 @@ namespace Connect_4
             {
                 index += 7;
             }
+            Console.ForegroundColor = ConsoleColor.Red;
             board[index] = symbol;
         }
 
@@ -129,16 +130,16 @@ namespace Connect_4
                 Console.WriteLine("Entrez un numéro de colonne valide");
                 move = Convert.ToInt32(Console.ReadLine());
             }
-            return move -1;
+            return move - 1;
         }
     }
 
     class Computer
     {
-        public string Name ="Computer";
+        public string Name = "Computer";
         public string Symbol = "X";
         public string Color = "Yellow";
-    public int getMove(Board board)
+        public int getMove(Board board)
         {
             Console.WriteLine("Entrez le numéro de la colonne où vous voulez placer votre jeton");
             int move = Convert.ToInt32(Console.ReadLine());
@@ -147,7 +148,7 @@ namespace Connect_4
                 Console.WriteLine("Entrez un numéro de colonne valide");
                 move = Convert.ToInt32(Console.ReadLine());
             }
-            return move -1;
+            return move - 1;
         }
     }
 
