@@ -27,7 +27,6 @@ namespace Connect_4
             Console.WriteLine("         {0} _|_ {1} _|_ {2} _|_ {3} _|_ {4} _|_ {5} _|_ {6} ", board[21], board[22], board[23], board[24], board[25], board[26], board[27]);
             Console.WriteLine("         {0} _|_ {1} _|_ {2} _|_ {3} _|_ {4} _|_ {5} _|_ {6} ", board[28], board[29], board[30], board[31], board[32], board[33], board[34]);
             Console.WriteLine("         {0}  |  {1}  |  {2}  |  {3}  |  {4}  |  {5}  |  {6} ", board[35], board[36], board[37], board[38], board[39], board[40], board[41]);
-
         }
 
         public bool isGameOver()
@@ -38,7 +37,7 @@ namespace Connect_4
         public string getWinner()
         {
             // On vérifie les rangées
-            for (int i = 0; i < 6; i += 7)
+            for (int i = 0; i < 39; i++)
             {
                 if (board[i] == board[i + 1] && board[i + 1] == board[i + 2] && board[i + 2] == board[i + 3])
                 {
@@ -46,7 +45,7 @@ namespace Connect_4
                 }
             }
             // On vérifies les colonnes
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 21; i++)
             {
                 if (board[i] == board[i + 7] && board[i + 7] == board[i + 14] && board[i + 14] == board[i + 21])
                 {
@@ -55,26 +54,21 @@ namespace Connect_4
             }
             // On vérifie les diagonales gauche vers droite
             for (int i = 0; i < 4; i++)
-                for (int j = 0; j < 4; j++)
-                {
                     if (board[i] == board[i + 8] && board[i + 8] == board[i + 16] && board[i + 16] == board[i + 24])
                     {
                         return board[i];
                     }
-                }
             // On vérifie les diagonales de droite vers gauche
             for(int i = 7; i >= 0; i--)
-                for(int j = 0; j < 4; j++)
-                {
-                   if (board[i] == board[i + 8] && board[i + 8] == board[i + 16] && board[i + 16] == board[i + 24])
+                   if (board[i] == board[i + 6] && board[i + 6] == board[i + 12] && board[i + 12] == board[i + 18])
                     {
                         return board[i];
                     }
-                }
             // Aucun gagnant
             return null;
         }
 
+        // Vérifie si le board est plein
         public bool isBoardFull()
         {
             for (int i = 0; i < 6; i++)
@@ -87,8 +81,29 @@ namespace Connect_4
             return true;
         }
 
+        // Envoie le jeton dans le bas de la colonne
         public void makeMove(int index, string symbol)
         {
+                if (board[index+ 35] != "X" && board[index + 35] != "O")
+                {
+                    index += 35;
+                }
+                else if (board[index + 28] != "X" && board[index + 28] != "O")
+                {
+                    index += 28;
+                }
+            else if (board[index + 21] != "X" && board[index + 21] != "O")
+            {
+                index += 21;
+            }
+            else if (board[index + 14] != "X" && board[index + 14] != "O")
+            {
+                index += 14;
+            }
+            else if (board[index + 7] != "X" && board[index + 7] != "O")
+            {
+                index += 7;
+            }
             board[index] = symbol;
         }
 
@@ -132,9 +147,38 @@ namespace Connect_4
                 Console.WriteLine("Entrez un numéro de colonne valide");
                 move = Convert.ToInt32(Console.ReadLine());
             }
-            return move - 1;
+            return move -1;
         }
     }
 
-
 }
+//public void makeMove(int index, string symbol)
+//{
+//    if (index == 1)
+//    {
+//        if (board[35] != "O" || board[35] != "X")
+//        {
+//            board[index] = board[35];
+//        }
+//        else if (board[28] != "O" || board[28] != "X")
+//        {
+//            board[index] = board[28];
+//        }
+//        else if (board[21] != "O" || board[21] != "X")
+//        {
+//            board[index] = board[21];
+//        }
+//        else if (board[14] != "O" || board[14] != "X")
+//        {
+//            board[index] = board[14];
+//        }
+//        else if (board[7] != "O" || board[7] != "X")
+//        {
+//            board[index] = board[7];
+//        }
+//        else if (board[0] != "O" || board[0] != "X")
+//        {
+//            board[index] = board[0];
+
+//        }
+//        board[index] = symbol;
