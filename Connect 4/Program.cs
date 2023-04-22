@@ -29,18 +29,14 @@
                 {
                     Console.WriteLine("C'est au tour de " + player.Name);
                     int move = player.getMove(board);
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    board.makeMove(move, player.Symbol);
-                    Console.ResetColor();
+                    board.makeMove(board.board,move, player.Symbol);
                     currentPlayer = 2;
                 }
                 else
                 {
                     // Tour de l'ordinateur
                     int move = computer.getMove(board);
-                    Console.BackgroundColor = ConsoleColor.Yellow;
-                    board.makeMove(move, computer.Symbol);
-                    Console.ResetColor();
+                    board.makeMove(board.board, move, computer.Symbol);
                     currentPlayer = 1;
                 }
             }
@@ -49,7 +45,7 @@
             board.printBoard();
 
             // Affiche le gagnant s'il y en a un
-            Console.WriteLine("Gagnant:" + board.getWinner());
+            Console.WriteLine("Gagnant:" + Board.getWinner(board.board));
 
         }
     }

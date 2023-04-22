@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
@@ -29,41 +30,48 @@ namespace Connect_4
             Console.WriteLine("         {0}  |  {1}  |  {2}  |  {3}  |  {4}  |  {5}  |  {6} ", board[35], board[36], board[37], board[38], board[39], board[40], board[41]);
         }
 
+
         public bool isGameOver()
         {
-            return getWinner() != null || isBoardFull();
+            return getWinner(board) != null || isBoardFull();
         }
 
-        public string getWinner()
+        public static string getWinner(string[] gameBoard)
         {
+
             // On vérifie les rangées
             for (int i = 0; i < 39; i++)
             {
-                if (board[i] == board[i + 1] && board[i + 1] == board[i + 2] && board[i + 2] == board[i + 3])
+                if (gameBoard[i] == gameBoard[i + 1] && gameBoard[i + 1] == gameBoard[i + 2] && gameBoard[i + 2] == gameBoard[i + 3])
                 {
-                    return board[i];
+                    return gameBoard[i];
+
                 }
             }
             // On vérifies les colonnes
             for (int i = 0; i < 21; i++)
             {
-                if (board[i] == board[i + 7] && board[i + 7] == board[i + 14] && board[i + 14] == board[i + 21])
+                if (gameBoard[i] == gameBoard[i + 7] && gameBoard[i + 7] == gameBoard[i + 14] && gameBoard[i + 14] == gameBoard[i + 21])
                 {
-                    return board[i];
+                    return gameBoard[i];
                 }
             }
             // On vérifie les diagonales gauche vers droite
-            for (int i = 0; i < 4; i++)
-                if (board[i] == board[i + 8] && board[i + 8] == board[i + 16] && board[i + 16] == board[i + 24])
+            for (int i = 0; i < 20; i++)
+            {
+                if (gameBoard[i] == gameBoard[i + 8] && gameBoard[i + 8] == gameBoard[i + 16] && gameBoard[i + 16] == gameBoard[i + 24])
                 {
-                    return board[i];
+                    return gameBoard[i];
                 }
+            }
             // On vérifie les diagonales de droite vers gauche
             for (int i = 20; i >= 0; i--)
-                if (board[i] == board[i + 6] && board[i + 6] == board[i + 12] && board[i + 12] == board[i + 18])
+            {
+                if (gameBoard[i] == gameBoard[i + 6] && gameBoard[i + 6] == gameBoard[i + 12] && gameBoard[i + 12] == gameBoard[i + 18])
                 {
-                    return board[i];
+                    return gameBoard[i];
                 }
+            }
             // Aucun gagnant
             return null;
         }
@@ -71,9 +79,9 @@ namespace Connect_4
         // Vérifie si le board est plein
         public bool isBoardFull()
         {
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 42; i++)
             {
-                if (board[i] != "O")
+                if (board[i] != "O" || board[i] != "X")
                 {
                     return false;
                 }
@@ -82,37 +90,39 @@ namespace Connect_4
         }
 
         // Envoie le jeton dans le bas de la colonne
-        public void makeMove(int index, string symbol)
+        public void makeMove(string[] gameBoard, int index, string symbol)
         {
-            if (board[index + 35] != "X" && board[index + 35] != "O")
+            if (index < 7)
             {
-                index += 35;
+                if (gameBoard[index + 35] != "X" && gameBoard[index + 35] != "O")
+                {
+                    index += 35;
+                }
+                else if (gameBoard[index + 28] != "X" && gameBoard[index + 28] != "O")
+                {
+                    index += 28;
+                }
+                else if (gameBoard[index + 21] != "X" && gameBoard[index + 21] != "O")
+                {
+                    index += 21;
+                }
+                else if (gameBoard[index + 14] != "X" && gameBoard[index + 14] != "O")
+                {
+                    index += 14;
+                }
+                else if (gameBoard[index + 7] != "X" && gameBoard[index + 7] != "O")
+                {
+                    index += 7;
+                }
             }
-            else if (board[index + 28] != "X" && board[index + 28] != "O")
-            {
-                index += 28;
-            }
-            else if (board[index + 21] != "X" && board[index + 21] != "O")
-            {
-                index += 21;
-            }
-            else if (board[index + 14] != "X" && board[index + 14] != "O")
-            {
-                index += 14;
-            }
-            else if (board[index + 7] != "X" && board[index + 7] != "O")
-            {
-                index += 7;
-            }
-            Console.ForegroundColor = ConsoleColor.Red;
-            board[index] = symbol;
+            // La case est libre, on peut y jouer
+            gameBoard[index] = symbol;
         }
 
         public string[] getBoard()
         {
             return board;
         }
-
     }
 
     class Player
@@ -136,50 +146,49 @@ namespace Connect_4
 
     class Computer
     {
+
         public string Name = "Computer";
         public string Symbol = "X";
         public string Color = "Yellow";
         public int getMove(Board board)
         {
-            Console.WriteLine("Entrez le numéro de la colonne où vous voulez placer votre jeton");
-            int move = Convert.ToInt32(Console.ReadLine());
+            // Vérifie si le computer peut gagner
+            for (int j = 0; j < 7; j++)
+            {
+                if (board.getBoard()[j] != "X" || board.getBoard()[j] != "O")
+                {
+                    Board tempBoard = new Board();
+                    Array.Copy(board.board, tempBoard.board, board.board.Length); // LA LIGNE QUI FAISAIT EN SORTE QUE MON CODE NE FONCTIONNAIT PAS, FINALEMENT RÉSOLU!!! Quand on copie un tableau, il faut utiliser Array.Copy, simplement faire un nouveau board ne fonctionnait pas. En faisait du debug, je vérifiais mes valeurs et je me suis rendu compte que tempBoard.board n'était pas égal a board.board sans cette ligne.
+                    tempBoard.makeMove(tempBoard.board, j, "X");                   
+                    if (Board.getWinner(tempBoard.board) == "X")
+                    {
+                        return j;
+                    }
+                }
+            }
+            // Vérifie si le joueur peut gagner
+            for (int j = 0; j < 7; j++)
+            {
+                if (board.getBoard()[j] != "X" || board.getBoard()[j] != "O")
+                {
+                    Board tempBoard = new Board();
+                    Array.Copy(board.board, tempBoard.board, board.board.Length);
+                    tempBoard.makeMove(tempBoard.board, j, "O");
+                    if (Board.getWinner(tempBoard.board) == "O")
+                    {
+                        return j;
+                    }
+                }
+            }
+            // Le jeu joue aléatoirement
+            Random rng = new Random();
+            int move = rng.Next(7);
             while (!board.board.Contains(move.ToString()))
             {
-                Console.WriteLine("Entrez un numéro de colonne valide");
-                move = Convert.ToInt32(Console.ReadLine());
+                move = rng.Next(7);
+
             }
             return move - 1;
         }
     }
-
 }
-//public void makeMove(int index, string symbol)
-//{
-//    if (index == 1)
-//    {
-//        if (board[35] != "O" || board[35] != "X")
-//        {
-//            board[index] = board[35];
-//        }
-//        else if (board[28] != "O" || board[28] != "X")
-//        {
-//            board[index] = board[28];
-//        }
-//        else if (board[21] != "O" || board[21] != "X")
-//        {
-//            board[index] = board[21];
-//        }
-//        else if (board[14] != "O" || board[14] != "X")
-//        {
-//            board[index] = board[14];
-//        }
-//        else if (board[7] != "O" || board[7] != "X")
-//        {
-//            board[index] = board[7];
-//        }
-//        else if (board[0] != "O" || board[0] != "X")
-//        {
-//            board[index] = board[0];
-
-//        }
-//        board[index] = symbol;
