@@ -12,30 +12,41 @@ namespace Connect_4
     internal class Board
     {
         public string[] board;
+        public static int xWin;
+        public static int oWin;
 
         public Board()
         {
+            // Un string pour chacune des cases du tableau de jeu
             board = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42" };
         }
 
         public void printBoard()
         {
-            Console.WriteLine(" Rangée: 1      2      3      4      5      6      7");
+            // Créeation du tableau de jeu utilisant les valeurs du tableau board
+            Console.WriteLine(" Rangée: 1     2     3     4     5     6     7");
             Console.WriteLine("_______________________________________________________________________");
-            Console.WriteLine("         {0}  _|_ {1}  _|_ {2}  _|_ {3}  _|_ {4}  _|_ {5}  _|_ {6} ", board[0], board[1], board[2], board[3], board[4], board[5], board[6]);
-            Console.WriteLine("         {0}  _|_ {1}  _|_ {2} _|_ {3 } _|_ {4} _|_ {5} _|_ {6} ", board[7], board[8], board[9], board[10], board[11], board[12], board[13]);
-            Console.WriteLine("         {0} _|_ {1} _|_ {2} _|_ {3} _|_ {4} _|_ {5} _|_ {6} ", board[14], board[15], board[16], board[17], board[18], board[19], board[20]);
-            Console.WriteLine("         {0} _|_ {1} _|_ {2} _|_ {3} _|_ {4} _|_ {5} _|_ {6} ", board[21], board[22], board[23], board[24], board[25], board[26], board[27]);
-            Console.WriteLine("         {0} _|_ {1} _|_ {2} _|_ {3} _|_ {4} _|_ {5} _|_ {6} ", board[28], board[29], board[30], board[31], board[32], board[33], board[34]);
-            Console.WriteLine("         {0}  |  {1}  |  {2}  |  {3}  |  {4}  |  {5}  |  {6} ", board[35], board[36], board[37], board[38], board[39], board[40], board[41]);
+            Console.WriteLine("         {0} _|_ {1} _|_ {2} _|_ {3} _|_ {4} _|_ {5} _|_ {6} ", GetValueOrEmpty(0), GetValueOrEmpty(1), GetValueOrEmpty(2), GetValueOrEmpty(3), GetValueOrEmpty(4), GetValueOrEmpty(5), GetValueOrEmpty(6));
+            Console.WriteLine("         {0} _|_ {1} _|_ {2} _|_ {3} _|_ {4} _|_ {5} _|_ {6} ", GetValueOrEmpty(7), GetValueOrEmpty(8), GetValueOrEmpty(9), GetValueOrEmpty(10), GetValueOrEmpty(11), GetValueOrEmpty(12), GetValueOrEmpty(13));
+            Console.WriteLine("         {0} _|_ {1} _|_ {2} _|_ {3} _|_ {4} _|_ {5} _|_ {6} ", GetValueOrEmpty(14), GetValueOrEmpty(15), GetValueOrEmpty(16), GetValueOrEmpty(17), GetValueOrEmpty(18), GetValueOrEmpty(19), GetValueOrEmpty(20));
+            Console.WriteLine("         {0} _|_ {1} _|_ {2} _|_ {3} _|_ {4} _|_ {5} _|_ {6} ", GetValueOrEmpty(21), GetValueOrEmpty(22), GetValueOrEmpty(23), GetValueOrEmpty(24), GetValueOrEmpty(25), GetValueOrEmpty(26), GetValueOrEmpty(27));
+            Console.WriteLine("         {0} _|_ {1} _|_ {2} _|_ {3} _|_ {4} _|_ {5} _|_ {6} ", GetValueOrEmpty(28), GetValueOrEmpty(29), GetValueOrEmpty(30), GetValueOrEmpty(31), GetValueOrEmpty(32), GetValueOrEmpty(33), GetValueOrEmpty(34));
+            Console.WriteLine("         {0}  |  {1}  |  {2}  |  {3}  |  {4}  |  {5}  |  {6} ", GetValueOrEmpty(35), GetValueOrEmpty(36), GetValueOrEmpty(37), GetValueOrEmpty(38), GetValueOrEmpty(39), GetValueOrEmpty(40), GetValueOrEmpty(41));
         }
 
+        // Pour utiliser la valeur du tableau board sans les voir directement sur le tableau de jeu
+        private string GetValueOrEmpty(int index)
+        {
+            return int.TryParse(board[index], out int value) ? " " : board[index];
+        }
 
+        // Vérifie si le jeu est terminé avec une des 2 conditions, soit un gagnant ou un tableau plein
         public bool isGameOver()
         {
             return getWinner(board) != null || isBoardFull();
         }
 
+        // Fonction pour vérifier si un joueur a gagné
         public static string getWinner(string[] gameBoard)
         {
 
@@ -57,7 +68,7 @@ namespace Connect_4
                 }
             }
             // On vérifie les diagonales gauche vers droite
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 14; i++)
             {
                 if (gameBoard[i] == gameBoard[i + 8] && gameBoard[i + 8] == gameBoard[i + 16] && gameBoard[i + 16] == gameBoard[i + 24])
                 {
@@ -119,9 +130,27 @@ namespace Connect_4
             gameBoard[index] = symbol;
         }
 
-        public string[] getBoard()
+        // Fonction pour le calcul du score
+        public void updateWinCount(string winner)
         {
-            return board;
+            if (winner == "X")
+            {
+                xWin++;
+            }
+            else if (winner == "O")
+            {
+                oWin++;
+            }
+        }
+
+        public int getXWinCount()
+        {
+            return xWin;
+        }
+
+        public int getOWinCount()
+        {
+            return oWin;
         }
     }
 
@@ -129,19 +158,20 @@ namespace Connect_4
     {
         public string Name = "Player";
         public string Symbol = "O";
-        public string Color = "Red";
 
+        // Fonction pour demander au joueur où il veut placer son jeton
         public int getMove(Board board)
         {
             Console.WriteLine("Entrez le numéro de la colonne où vous voulez placer votre jeton");
-            int move = Convert.ToInt32(Console.ReadLine());
-            while (!board.board.Contains(move.ToString()))
+            int moveR;
+            while (!int.TryParse(Console.ReadLine(), out moveR) || moveR < 1 || moveR > 7 || !board.board.Contains(moveR.ToString()))
             {
                 Console.WriteLine("Entrez un numéro de colonne valide");
-                move = Convert.ToInt32(Console.ReadLine());
             }
-            return move - 1;
+
+            return moveR - 1;
         }
+
     }
 
     class Computer
@@ -149,17 +179,18 @@ namespace Connect_4
 
         public string Name = "Computer";
         public string Symbol = "X";
-        public string Color = "Yellow";
+
+        // Fonction pour demander au computer où il veut placer son jeton
         public int getMove(Board board)
         {
             // Vérifie si le computer peut gagner
             for (int j = 0; j < 7; j++)
             {
-                if (board.getBoard()[j] != "X" || board.getBoard()[j] != "O")
+                if ((board.board[j] != "X" || board.board[j] != "O") && int.TryParse(board.board[j], out _))
                 {
                     Board tempBoard = new Board();
                     Array.Copy(board.board, tempBoard.board, board.board.Length); // LA LIGNE QUI FAISAIT EN SORTE QUE MON CODE NE FONCTIONNAIT PAS, FINALEMENT RÉSOLU!!! Quand on copie un tableau, il faut utiliser Array.Copy, simplement faire un nouveau board ne fonctionnait pas. En faisait du debug, je vérifiais mes valeurs et je me suis rendu compte que tempBoard.board n'était pas égal a board.board sans cette ligne.
-                    tempBoard.makeMove(tempBoard.board, j, "X");                   
+                    tempBoard.makeMove(tempBoard.board, j, "X");
                     if (Board.getWinner(tempBoard.board) == "X")
                     {
                         return j;
@@ -169,7 +200,7 @@ namespace Connect_4
             // Vérifie si le joueur peut gagner
             for (int j = 0; j < 7; j++)
             {
-                if (board.getBoard()[j] != "X" || board.getBoard()[j] != "O")
+                if ((board.board[j] != "X" || board.board[j] != "O") && int.TryParse(board.board[j], out _))
                 {
                     Board tempBoard = new Board();
                     Array.Copy(board.board, tempBoard.board, board.board.Length);
@@ -180,7 +211,7 @@ namespace Connect_4
                     }
                 }
             }
-            // Le jeu joue aléatoirement
+            // Le jeu joue aléatoirement si les 2 autres function ne sont pas vraies
             Random rng = new Random();
             int move = rng.Next(7);
             while (!board.board.Contains(move.ToString()))

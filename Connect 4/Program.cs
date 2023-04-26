@@ -1,4 +1,6 @@
-﻿namespace Connect_4
+﻿using System.Diagnostics.Metrics;
+
+namespace Connect_4
 {
     internal class Program
     {
@@ -46,7 +48,22 @@
 
             // Affiche le gagnant s'il y en a un
             Console.WriteLine("Gagnant:" + Board.getWinner(board.board));
-
+            // Calcul pour le total de victoires
+            string winner = Board.getWinner(board.board);
+            board.updateWinCount(winner);
+            Console.WriteLine("Victoires du joueur 1: {0}", Board.oWin);
+            Console.WriteLine("Victoires de l'ordi : {0}", Board.xWin);
+            Console.WriteLine("Voulez-vous rejouer? (O/N)");
+            char answer;
+            while (!char.TryParse(Console.ReadLine(), out answer) || (answer != 'O' && answer != 'N'))
+            {
+                Console.WriteLine("Entrez un caractère valide");
+            }
+            if (answer == 'O')
+            {
+                Main(args);
+            }
         }
     }
+
 }
